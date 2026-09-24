@@ -30,11 +30,6 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
-      margin: 0 0 20px;
-      font-size: 1.5rem;
-    }
-
     .field {
       margin-bottom: 16px;
     }
@@ -110,7 +105,6 @@
 <body>
   <div class="container">
     <div id="form-container">
-      <h1>Send us feedback</h1>
       <form id="feedback-form" novalidate>
         <div class="field">
           <label for="name">Name <span class="required">*</span></label>
@@ -220,6 +214,12 @@
         }
         field.addEventListener('input', onEdit);
         field.addEventListener('change', onEdit);
+      });
+
+      // Browsers can restore field values on reload without firing input
+      // events, so sync the submit button once the page is shown.
+      window.addEventListener('pageshow', function () {
+        validate(false);
       });
 
       form.addEventListener('submit', function (event) {
