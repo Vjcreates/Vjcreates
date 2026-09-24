@@ -30,6 +30,11 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
+    h1 {
+      margin: 0 0 20px;
+      font-size: 1.5rem;
+    }
+
     .field {
       margin-bottom: 16px;
     }
@@ -105,6 +110,7 @@
 <body>
   <div class="container">
     <div id="form-container">
+      <h1>Send us feedback</h1>
       <form id="feedback-form" novalidate>
         <div class="field">
           <label for="name">Name <span class="required">*</span></label>
@@ -125,7 +131,6 @@
             <option value="Feature Request">Feature Request</option>
             <option value="General">General</option>
           </select>
-          <span class="error" id="feedback-type-error"></span>
         </div>
 
         <div class="field">
@@ -152,8 +157,6 @@
       var submitButton = document.getElementById('submit-button');
       var submitAnother = document.getElementById('submit-another');
 
-      var FEEDBACK_TYPES = ['Bug', 'Feature Request', 'General'];
-
       // Each validator returns an error message, or '' when the value is valid.
       var validators = {
         'name': function (value) {
@@ -174,10 +177,6 @@
           if (dot <= 0 || dot === domain.length - 1 || domain.indexOf('..') !== -1) {
             return 'Email domain must include a dot, like example.com';
           }
-          return '';
-        },
-        'feedback-type': function (value) {
-          if (FEEDBACK_TYPES.indexOf(value) === -1) return 'Feedback Type is required';
           return '';
         },
         'message': function (value) {
