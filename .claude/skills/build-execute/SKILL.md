@@ -64,6 +64,7 @@ Ask directly: **"Ready to open a PR for this?"** Wait for an explicit yes. A lac
 - **If a ticket key was passed:** PR title is `<TICKET-KEY>: <short description>`
 - **If "no-ticket" was passed:** PR title is a clear plain-language description only
 - If a ticket exists, note in the PR description that merging should transition the ticket (handled by the standard GitHub-Jira integration, not this skill)
+- Include screenshots in the PR description, per AGENTS.md: capture them from the built branch running in a browser, not mockups. If you can't attach them yourself, save them to files and tell the human where they are so the PR doesn't go up without them.
 
 ## Step 6 — Hand off
 
