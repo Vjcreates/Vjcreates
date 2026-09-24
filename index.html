@@ -1,1 +1,249 @@
-Hello!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f5f7;
+      color: #1f2328;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 1.5rem;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .required {
+      color: #c62828;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      font: inherit;
+      border: 1px solid #c4c8cd;
+      border-radius: 4px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .invalid {
+      border-color: #c62828;
+    }
+
+    .error {
+      display: block;
+      min-height: 1.2em;
+      margin-top: 4px;
+      font-size: 0.875rem;
+      color: #c62828;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font: inherit;
+      font-weight: 600;
+      color: #ffffff;
+      background: #0b5cad;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #9bb7d4;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #success-container {
+      text-align: center;
+    }
+
+    #success-container p {
+      font-size: 1.25rem;
+      margin: 0 0 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="form-container">
+      <h1>Send us feedback</h1>
+      <form id="feedback-form" novalidate>
+        <div class="field">
+          <label for="name">Name <span class="required">*</span></label>
+          <input type="text" id="name" name="name">
+          <span class="error" id="name-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="text" id="email" name="email">
+          <span class="error" id="email-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="feedback-type">Feedback Type <span class="required">*</span></label>
+          <select id="feedback-type" name="feedback-type">
+            <option value="Bug" selected>Bug</option>
+            <option value="Feature Request">Feature Request</option>
+            <option value="General">General</option>
+          </select>
+          <span class="error" id="feedback-type-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="message">Message <span class="required">*</span></label>
+          <textarea id="message" name="message"></textarea>
+          <span class="error" id="message-error"></span>
+        </div>
+
+        <button type="submit" id="submit-button" disabled>Submit</button>
+      </form>
+    </div>
+
+    <div id="success-container" class="hidden">
+      <p>Thanks for your feedback!</p>
+      <a href="#" id="submit-another">Submit another response</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('feedback-form');
+      var formContainer = document.getElementById('form-container');
+      var successContainer = document.getElementById('success-container');
+      var submitButton = document.getElementById('submit-button');
+      var submitAnother = document.getElementById('submit-another');
+
+      var FEEDBACK_TYPES = ['Bug', 'Feature Request', 'General'];
+
+      // Each validator returns an error message, or '' when the value is valid.
+      var validators = {
+        'name': function (value) {
+          if (value.trim() === '') return 'Name is required';
+          return '';
+        },
+        'email': function (value) {
+          var trimmed = value.trim();
+          if (trimmed === '') return 'Email is required';
+          var at = trimmed.indexOf('@');
+          if (at === -1) return 'Email must include @';
+          if (trimmed.slice(at + 1).trim() === '') return 'Email must include a domain after @';
+          return '';
+        },
+        'feedback-type': function (value) {
+          if (FEEDBACK_TYPES.indexOf(value) === -1) return 'Feedback type is required';
+          return '';
+        },
+        'message': function (value) {
+          var trimmed = value.trim();
+          if (trimmed === '') return 'Message is required';
+          if (trimmed.length < 10) return 'Message must be at least 10 characters';
+          return '';
+        }
+      };
+
+      var fieldIds = Object.keys(validators);
+      var touched = {};
+
+      function getField(id) {
+        return document.getElementById(id);
+      }
+
+      function getError(id) {
+        return document.getElementById(id + '-error');
+      }
+
+      // Validates every field. Errors are only rendered for touched fields
+      // (or all fields when showAll is true). Field values are never modified.
+      function validate(showAll) {
+        var allValid = true;
+        fieldIds.forEach(function (id) {
+          var message = validators[id](getField(id).value);
+          if (message !== '') allValid = false;
+          var show = showAll || touched[id];
+          getError(id).textContent = show ? message : '';
+          getField(id).classList.toggle('invalid', show && message !== '');
+        });
+        submitButton.disabled = !allValid;
+        return allValid;
+      }
+
+      fieldIds.forEach(function (id) {
+        var field = getField(id);
+        function onEdit() {
+          touched[id] = true;
+          validate(false);
+        }
+        field.addEventListener('input', onEdit);
+        field.addEventListener('change', onEdit);
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        fieldIds.forEach(function (id) { touched[id] = true; });
+        if (!validate(true)) return;
+        // No backend: simulate a successful submission.
+        formContainer.classList.add('hidden');
+        successContainer.classList.remove('hidden');
+      });
+
+      submitAnother.addEventListener('click', function (event) {
+        event.preventDefault();
+        form.reset();
+        touched = {};
+        fieldIds.forEach(function (id) {
+          getError(id).textContent = '';
+          getField(id).classList.remove('invalid');
+        });
+        submitButton.disabled = true;
+        successContainer.classList.add('hidden');
+        formContainer.classList.remove('hidden');
+      });
+    })();
+  </script>
+</body>
+</html>
