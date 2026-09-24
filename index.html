@@ -205,7 +205,7 @@
         fieldIds.forEach(function (id) {
           var message = validators[id](getField(id).value);
           if (message !== '') allValid = false;
-          var show = showAll || touched[id];
+          var show = Boolean(showAll || touched[id]);
           getError(id).textContent = show ? message : '';
           getField(id).classList.toggle('invalid', show && message !== '');
         });
