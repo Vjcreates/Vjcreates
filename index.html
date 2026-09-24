@@ -165,7 +165,15 @@
           if (trimmed === '') return 'Email is required';
           var at = trimmed.indexOf('@');
           if (at === -1) return 'Email must include @';
-          if (trimmed.slice(at + 1).trim() === '') return 'Email must include a domain after @';
+          if (/\s/.test(trimmed)) return "Email can't contain spaces";
+          if (trimmed.indexOf('@', at + 1) !== -1) return 'Email can only include one @';
+          if (at === 0) return 'Email must include a name before @';
+          var domain = trimmed.slice(at + 1);
+          if (domain === '') return 'Email must include a domain after @';
+          var dot = domain.lastIndexOf('.');
+          if (dot <= 0 || dot === domain.length - 1 || domain.indexOf('..') !== -1) {
+            return 'Email domain must include a dot, like example.com';
+          }
           return '';
         },
         'feedback-type': function (value) {
