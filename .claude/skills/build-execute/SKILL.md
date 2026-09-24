@@ -24,11 +24,17 @@ Build the change on a local branch, following the approved plan — **do not ope
 
 ## Step 2 — Reviewer (delegated, independent)
 
-Delegate to the **reviewer** subagent via the Agent tool. Pass it:
+Delegate via the Agent tool using `subagent_type: general-purpose`. In the delegation prompt, explicitly instruct the subagent to:
+1. Read `.claude/agents/reviewer.md` first
+2. Follow its persona and instructions exactly — review the diff cold, check against AGENTS.md, output findings in the format it specifies
+
+This is a deliberate workaround: Claude Code's `Agent` tool only accepts subagent types from its own fixed registry (`general-purpose`, `Explore`, `Plan`, etc.) — it does not natively discover custom agents defined in `.claude/agents/` by name. Passing `subagent_type: reviewer` directly will fail with "Agent type 'reviewer' not found." Using `general-purpose` and pointing it at the file achieves the same isolation (fresh context, no inherited reasoning) without relying on native discovery that doesn't currently work.
+
+Pass the subagent:
 - The diff (`git diff` against the base branch)
 - The approved implementation plan (not just the original spec — the plan is the actual source of truth for what should have been built)
 
-Do **not** pass your own reasoning, notes, or explanation of why you made particular implementation choices — it should judge the diff against the plan on its own, with a fresh context, the same way an independent reviewer would.
+Do **not** pass your own reasoning, notes, or explanation of why you made particular implementation choices — the subagent should judge the diff against the plan on its own, with a fresh context, the same way an independent reviewer would.
 
 ## Step 3 — Fixer (you, same context as Coder)
 
@@ -36,10 +42,11 @@ Evaluate each of the Reviewer's findings — don't apply them automatically. You
 
 For each finding:
 - **Agree, and it's a real gap** → fix it with a local commit
-- **Disagree, because the Reviewer lacked context it needed** (e.g. it flagged something AGENTS.md already covers, or a constraint that isn't visible from the diff + requirement alone) → don't apply the fix. Note in your own words why the finding doesn't hold, so it's visible at the approval gate.
+- **The diff deviates from the approved plan** → this is always a real finding, regardless of anything said in conversation afterward. A verbal request mid-session ("change X to Y") is not the same as re-approving the plan — the plan is the source of truth, and only Step 4's explicit approval can change it. Do not reject a finding on the grounds that "the user asked for this in chat." If a deviation happened, fix it back to the plan, or — if you believe the deviation is actually correct — surface it as an open item at Step 4 so the human can explicitly approve the plan change itself, rather than treating an in-conversation request as sufficient.
+- **Disagree, because the Reviewer lacked context it needed** (e.g. it flagged something AGENTS.md already covers, or a constraint that isn't visible from the diff + requirement alone) — and the diff still matches the approved plan → don't apply the fix. Note in your own words why the finding doesn't hold, so it's visible at the approval gate.
 - **Genuinely unclear, or a real judgment call either way** → don't silently pick a side. Leave it as an open item for the human to weigh in on at Step 4, rather than the Fixer deciding unilaterally.
 
-Never treat "the Reviewer said so" as sufficient justification on its own — the same way the Reviewer doesn't treat "the Coder wrote it that way" as sufficient. Both directions need an actual reason.
+Never treat "the Reviewer said so" as sufficient justification on its own — the same way the Reviewer doesn't treat "the Coder wrote it that way" as sufficient, and doesn't treat "the user said so in conversation" as equivalent to plan approval. All three need an actual reason tied back to the approved plan.
 
 **Loop Step 2 → Step 3 up to 3 rounds.** If not clean after 3 rounds, stop looping and move to Step 4 anyway, flagging the unresolved items for the human to weigh in on.
 
