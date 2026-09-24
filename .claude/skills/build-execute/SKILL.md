@@ -59,20 +59,26 @@ Never treat "the Reviewer said so" as sufficient justification on its own — th
 
 Ask directly: **"Ready to open a PR for this?"** Wait for an explicit yes. A lack of response, or anything short of clear approval, means stop — do not open the PR speculatively or "to save time."
 
-## Step 5 — Open the PR (only after approval)
+## Step 5 — Prepare the PR link (only after approval)
 
+Never create the PR yourself, even if a GitHub connector or the `gh` CLI is available. The human always clicks Create. Instead:
+- Push the branch.
+- Hand the human a prefilled GitHub compare link: `https://github.com/<owner>/<repo>/compare/<base>...<branch>?expand=1&title=<title>&body=<description>`, with the title and description URL-encoded. Build it from the repo's actual `origin` remote, never a guessed owner or repo.
+- If a PR may already exist for the branch, say so. GitHub shows the existing PR on that page instead of a create form.
+
+The title and description follow these rules:
 - **If a ticket key was passed:** PR title is `<TICKET-KEY>: <short description>`
 - **If "no-ticket" was passed:** PR title is a clear plain-language description only
 - If a ticket exists, note in the PR description that merging should transition the ticket (handled by the standard GitHub-Jira integration, not this skill)
-- Include screenshots in the PR description, per AGENTS.md: capture them from the built branch running in a browser, not mockups. If you can't attach them yourself, save them to files and tell the human where they are so the PR doesn't go up without them.
+- Include screenshots, per AGENTS.md: capture them from the built branch running in a browser, not mockups. A link can't carry images, so give the description a Screenshots section with one labeled line per image, save the files, and tell the human where they are so they can drag them in before clicking Create.
 
 ## Step 6 — Hand off
 
-Do not merge. Leave the PR ready for engineering's review and merge — this step is never automated.
+Do not merge. Once the human creates the PR, leave it for engineering's review and merge — this step is never automated.
 
 ## Report back
 
 Report to the main session:
-- Whether a PR was opened (and its link), or whether it's still waiting on approval
+- The prefilled PR link and where the screenshot files are, or that it's still waiting on approval
 - Fixes applied, findings rejected (with reasoning), and any open items left for the human
 - Number of Fixer rounds it took
