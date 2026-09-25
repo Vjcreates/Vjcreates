@@ -21,7 +21,6 @@ This file is read by every stage of the pipeline (Analyzer, Coder, Reviewer, Fix
 - Do not update or transition a Jira ticket other than the one explicitly being worked on, without asking first
 - PR titles must include the ticket key when one exists, e.g. `APP-2200: MMS drag-and-drop — Windows`
 - When no ticket exists (pasted-spec path with no ticket created), PR titles use a clear plain-language description instead
-- PR descriptions must always include screenshots of the change: the default state plus each key state (e.g. errors, success, empty, loading) and a mobile-width view for anything with layout
 
 ---
 
@@ -40,6 +39,16 @@ This file is read by every stage of the pipeline (Analyzer, Coder, Reviewer, Fix
 ## Address & Contact Fields
 - "Address" (combined Line 1 + Line 2) is standard convention when City/State/Postal Code/Country remain separate fields — do not fold city/state into a single "Address" field.
 - Address Line 1 and Line 2 should be **stored separately** even when displayed together — display-only concatenation, never merge at the data layer, especially for anything E911-adjacent.
+
+---
+
+## PR Screenshots
+
+- Every PR description built by `build-execute` (Step 5) includes real screenshots of the change, taken from the built branch running in a browser. No mockups or design files.
+- **What to capture:** the default state, each key state (e.g. errors, success, empty, loading), and a mobile-width view for anything with layout.
+- **How:** Claude captures them itself with headless Chrome driven through the Chrome DevTools Protocol (a short Node script, no extra connector needed). For mobile, set the viewport with device-metrics emulation (375px wide). Don't use `--window-size`, which headless Chrome clamps to a minimum width, so the page lays out wider and gets cropped. The in-app browser pane can show screenshots but can't save them to files, and the Chrome extension may be blocked on `localhost`.
+- **Attaching:** a PR link can't carry images. So `build-execute` saves the files, adds a "Screenshots" section to the description with one labeled line per image, and tells the human where the files are. The human drags them in before clicking Create.
+- **If capture fails:** keep the labeled placeholder section and say capture failed, so the human takes the screenshots manually. Never drop the section.
 
 ---
 
