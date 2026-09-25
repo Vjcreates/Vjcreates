@@ -43,7 +43,9 @@ Check the spec (ticket or pasted text) against AGENTS.md conventions:
 **If the spec is solid:** write a detailed implementation plan — not a 2-3 sentence summary. Include:
 - Which files/areas of the codebase will change, and why
 - Each Required bullet / Acceptance Criterion mapped to how it will be implemented
-- Any assumptions being made where the spec is silent
+- **Conventional UI elements the spec didn't explicitly mention but a page of this kind would normally have** (e.g. a heading, standard spacing, expected labels) — include these as stated assumptions in the plan rather than omitting them for not being spec'd. Don't build only the literal letter of the spec if it would produce a page missing obvious, expected elements.
+- **Consistency with existing pages already in the repo (main branch)** — check how other pages handle similar elements (headings, error-message style, layout conventions, terminology, spacing) and either follow that precedent explicitly, or flag it if this page has a reason to diverge. Always consider the overall user experience, not just the literal requirement text — note this in the plan so it's visible before approval, not discovered later.
+- Any other assumptions being made where the spec is silent
 - Edge cases and how they'll be handled
 - What's explicitly out of scope, if that's ambiguous from the spec
 

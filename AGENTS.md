@@ -21,6 +21,7 @@ This file is read by every stage of the pipeline (Analyzer, Coder, Reviewer, Fix
 - Do not update or transition a Jira ticket other than the one explicitly being worked on, without asking first
 - PR titles must include the ticket key when one exists, e.g. `APP-2200: MMS drag-and-drop — Windows`
 - When no ticket exists (pasted-spec path with no ticket created), PR titles use a clear plain-language description instead
+- PR descriptions must always include screenshots of the change: the default state plus each key state (e.g. errors, success, empty, loading) and a mobile-width view for anything with layout
 
 ---
 
