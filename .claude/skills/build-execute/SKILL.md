@@ -24,11 +24,13 @@ Build the change on a local branch, following the approved plan — **do not ope
 
 ## Step 2 — Reviewer (delegated, independent)
 
-Delegate via the Agent tool using `subagent_type: general-purpose`. In the delegation prompt, explicitly instruct the subagent to:
-1. Read `.claude/agents/reviewer.md` first
-2. Follow its persona and instructions exactly — review the diff cold, check against AGENTS.md, output findings in the format it specifies
+Every review round, try the real reviewer agent first:
+1. **Try `subagent_type: reviewer`** with the Agent tool. If it runs, use its findings.
+2. **Only if that call fails** with "Agent type 'reviewer' not found", fall back to `subagent_type: general-purpose`, and in the prompt tell the subagent to read `.claude/agents/reviewer.md` first and follow its persona and instructions exactly: review the diff cold, check against AGENTS.md, and output findings in the format it specifies.
 
-This is a deliberate workaround: Claude Code's `Agent` tool only accepts subagent types from its own fixed registry (`general-purpose`, `Explore`, `Plan`, etc.) — it does not natively discover custom agents defined in `.claude/agents/` by name. Passing `subagent_type: reviewer` directly will fail with "Agent type 'reviewer' not found." Using `general-purpose` and pointing it at the file achieves the same isolation (fresh context, no inherited reasoning) without relying on native discovery that doesn't currently work.
+Don't skip step 1 because it failed in an earlier round or session. Whether `.claude/agents/` agents are registered depends on the environment running the pipeline, so check each time. In the report, say which one ran for each round.
+
+Why the fallback exists: in some environments the `Agent` tool only accepts its own fixed registry (`general-purpose`, `Explore`, `Plan`, etc.) and doesn't discover custom agents in `.claude/agents/`. Pointing `general-purpose` at the file gives the same isolation (fresh context, no inherited reasoning).
 
 Pass the subagent:
 - The diff (`git diff` against the base branch)
@@ -81,4 +83,4 @@ Do not merge. Once the human creates the PR, leave it for engineering's review a
 Report to the main session:
 - The prefilled PR link and where the screenshot files are, or that it's still waiting on approval
 - Fixes applied, findings rejected (with reasoning), and any open items left for the human
-- Number of Fixer rounds it took
+- Number of Fixer rounds it took, and for each round whether the `reviewer` agent or the `general-purpose` fallback ran
