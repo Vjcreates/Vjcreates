@@ -7,8 +7,9 @@ Over 7 years I've taken B2B SaaS products from 0-to-1 MVPs to revenue growth. La
 
 Lately, I've been working on
 
-- Agent pipelines that turn Jira tickets and specs into reviewed pull requests, with a human merge gate
-- AI-assisted design-to-code prototyping with Claude Code and GitHub Copilot
+- Agentic pipelines that turn specs into reviewed pull requests, with a human merge gate
+- Agentic design-to-code pipeline with Claude Code and GitHub Copilot
+- Built custom plugins to assist in delivering high value
 - Evaluating customer-facing AI agents
 - Live dashboards that turn app reviews and support feedback into product priorities
 - Moving recurring PM work (intake, triage, release notes, reporting) into agentic workflows
