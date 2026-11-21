@@ -9,6 +9,7 @@ Lately, I've been working on
 
 - Agentic pipelines that turn specs into reviewed pull requests, with a human merge gate
 - Agentic design-to-code pipeline with Claude Code and GitHub Copilot
+- Own and execute the product roadmap of high impact teams
 - Built custom plugins to assist in delivering high value
 - Evaluating customer-facing AI agents
 - Live dashboards that turn app reviews and support feedback into product priorities
